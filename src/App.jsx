@@ -1,5 +1,11 @@
 import * as React from "react"
-// IMPORT ANY NEEDED COMPONENTS HERE
+import HeaderComponent from "./components/Header/Header";
+import CatColumn from "./components/CategoriesColumn/CategoriesColumn";
+import RestaurantsRow from "./components/RestaurantsRow/RestaurantsRow";
+import MainDisplay from "./components/MainDisplay/MainDisplay";
+import InstructionsComponent from "./components/Instructions/Instructions";
+import NutritionalFacts from "./components/NutritionalFacts/NutritionalFacts";
+import { useState } from "react";
 import { createDataSet } from "./data/dataset"
 import "./App.css"
 
@@ -21,37 +27,62 @@ export const appInfo = {
 const { data, categories, restaurants } = createDataSet()
 
 export function App() {
+
+  const [currCategory, setCurrCategory] = useState("");
+  const [currRestaurant, setCurrRestarurant] = useState("");
+  const [currItem, setCurrItem] = useState({
+    calories: "580",
+    carbohydrates: "43",
+    cholesterol: "85",
+    dietary_fiber: "7",
+    food_category: "Salads",
+    item_description: "Grilled Market Salad w/ Chick n Strips, Lettuce, Baby Greens, Red Cabbage, Carrots, Blue Cheese, Red Apples, Green Apples, Strawberries & Blueberries, Salads; Choice of Adding: Harvest Nut Granola, Roasted Nut Blend & Dressing",
+    item_name: "Grilled Market Salad w/ Chick n Strips",
+    protein: "39",
+    restaurant: "Chick-Fil-A",
+    saturated_fat: "2.5",
+    serving_size: "",
+    serving_size_unit: "",
+    sodium: "1090",
+    sugar: "14",
+    total_fat: "30",
+    trans_fat: "0",
+  });
+  const [isNutritionalFactRendered, setIsNutritionalFactRendered] = useState(false);
+
+  let currentMenuItems = data.filter(item => item.restaurant == currRestaurant && item.food_category == currCategory)
+
   return (
     <main className="App">
-      {/* CATEGORIES COLUMN */}
-      <div className="CategoriesColumn col">
-        <div className="categories options">
-          <h2 className="title">Categories</h2>
-          {/* YOUR CODE HERE */}
-        </div>
-      </div>
+      <CatColumn
+        categories={categories}
+        currCategory={currCategory}
+        setCurrCategory={setCurrCategory}
+      />
 
       {/* MAIN COLUMN */}
       <div className="container">
-        {/* HEADER GOES HERE */}
+        <HeaderComponent title={appInfo.title} tagline={appInfo.tagline} description={appInfo.description} />
 
-        {/* RESTAURANTS ROW */}
-        <div className="RestaurantsRow">
-          <h2 className="title">Restaurants</h2>
-          <div className="restaurants options">{/* YOUR CODE HERE */}</div>
-        </div>
+        <RestaurantsRow
+          restaurants={restaurants}
+          currRestaurant={currRestaurant}
+          setCurrRestarurant={setCurrRestarurant}
+        />
 
-        {/* INSTRUCTIONS GO HERE */}
+        <InstructionsComponent instructions={appInfo.instructions.start} />
 
-        {/* MENU DISPLAY */}
         <div className="MenuDisplay display">
-          <div className="MenuItemButtons menu-items">
-            <h2 className="title">Menu Items</h2>
-            {/* YOUR CODE HERE */}
-          </div>
-
-          {/* NUTRITION FACTS */}
-          <div className="NutritionFacts nutrition-facts">{/* YOUR CODE HERE */}</div>
+          <MainDisplay
+            currItem={currItem}
+            currentMenuItems={currentMenuItems}
+            setCurrItem={setCurrItem}
+            setIsNutritionalFactRendered={setIsNutritionalFactRendered}
+          />
+          <NutritionalFacts
+            currItem={currItem}
+            isNutritionalFactRendered={isNutritionalFactRendered}
+          />
         </div>
 
         <div className="data-sources">
